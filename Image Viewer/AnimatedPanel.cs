@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
 namespace ImageViewer
@@ -13,24 +7,19 @@ namespace ImageViewer
     internal class AnimatedPanel
     {
         private static Action emptyAction = () => { };
-        private readonly FrameworkElement _slider;
         private readonly IAnimatable _fader;
         private readonly UIElement _focus;
         private readonly FrameworkElement _parent;
-        private readonly DependencyProperty _property;
         private readonly DependencyProperty _parentProperty;
         private readonly Func<bool> _pred;
+        private readonly DependencyProperty _property;
         private readonly IInputElement _returnFocus;
+        private readonly FrameworkElement _slider;
         private Animation _animation = Animation.None;
 
-        private enum Animation
-        {
-            None,
-            Opening,
-            Closing
-        }
-
-        public AnimatedPanel(FrameworkElement slider, IAnimatable fader, UIElement focus, FrameworkElement parent, DependencyProperty property, DependencyProperty parentProperty, Func<bool> pred, IInputElement returnFocus = null)
+        public AnimatedPanel(FrameworkElement slider, IAnimatable fader, UIElement focus, FrameworkElement parent,
+            DependencyProperty property, DependencyProperty parentProperty, Func<bool> pred,
+            IInputElement returnFocus = null)
         {
             _slider = slider;
             _fader = fader;
@@ -81,7 +70,7 @@ namespace ImageViewer
             _focus.Focus();
             var from = 1 - to;
 
-            var se = new CubicEase {EasingMode = EasingMode.EaseInOut};
+            var se = new CubicEase { EasingMode = EasingMode.EaseInOut };
 
             var pp = (double)_parent.GetValue(_parentProperty);
             var dur1 = new Duration(TimeSpan.FromMilliseconds(125));
@@ -92,6 +81,13 @@ namespace ImageViewer
             da2.Completed += (o, args) => end();
             _slider.BeginAnimation(_property, da1);
             _fader.BeginAnimation(UIElement.OpacityProperty, da2);
+        }
+
+        private enum Animation
+        {
+            None,
+            Opening,
+            Closing
         }
     }
 }

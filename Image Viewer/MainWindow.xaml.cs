@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows;
-using System.Windows.Input;
 using System.IO;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -14,18 +13,20 @@ namespace ImageViewer
 {
     public partial class MainWindow
     {
-        private readonly FilteredFileList _files;
-        private readonly AnimatedPanel _tagListAnimation;
-        private readonly AnimatedPanel _quickTagsAnimation;
         private static MainWindow _instance;
+        private readonly FilteredFileList _files;
+        private readonly AnimatedPanel _quickTagsAnimation;
+        private readonly AnimatedPanel _tagListAnimation;
         private WindowState _oldWindowState;
 
         public MainWindow()
         {
             _instance = this;
             InitializeComponent();
-            _tagListAnimation = new AnimatedPanel(tagScrollList, panel, newTagBox, myGrid, MaxWidthProperty, ActualWidthProperty, () => tagScrollList.MaxWidth <= 10, tagScrollList);
-            _quickTagsAnimation = new AnimatedPanel(quickTagsGrid, quickTags, quickTags, myGrid, MaxHeightProperty, ActualHeightProperty, () => quickTagsGrid.MaxHeight <= 10, tagScrollList);
+            _tagListAnimation = new AnimatedPanel(tagScrollList, panel, newTagBox, myGrid, MaxWidthProperty,
+                ActualWidthProperty, () => tagScrollList.MaxWidth <= 10, tagScrollList);
+            _quickTagsAnimation = new AnimatedPanel(quickTagsGrid, quickTags, quickTags, myGrid, MaxHeightProperty,
+                ActualHeightProperty, () => quickTagsGrid.MaxHeight <= 10, tagScrollList);
 
             var dir = Environment.CurrentDirectory;
             if (Environment.GetCommandLineArgs().Length > 1)
@@ -40,6 +41,13 @@ namespace ImageViewer
             _files = new FilteredFileList(dir, tagList);
             ChangeImage();
         }
+
+        public bool IsFullScreen => WindowStyle == WindowStyle.None;
+
+        private static FileElement CurrentFile => _instance._files.CurrentFile;
+
+        private double TagListTriggerArea => Math.Max(myGrid.ActualWidth * 0.05, 20);
+        private double TopTextTriggerArea => myGrid.ActualHeight - Math.Max(myGrid.ActualHeight * 0.05, 20);
 
         private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -87,8 +95,6 @@ namespace ImageViewer
             }
         }
 
-        public bool IsFullScreen => WindowStyle == WindowStyle.None;
-
         private void UpdateImage(Action done)
         {
             var cf = CurrentFile;
@@ -97,12 +103,14 @@ namespace ImageViewer
                 DisplayNoImage();
                 return;
             }
+
             if (!cf.Exists)
             {
                 _files.Remove(cf);
                 ChangeImage();
                 return;
             }
+
             if (!_files.IsActiveImageSetter) return;
 
             Dispatcher.Invoke(() => SetImageSource(cf));
@@ -112,7 +120,7 @@ namespace ImageViewer
         private void SetImageSource(FileElement file)
         {
             Title = file.FileName;
-            ((BlurEffect) image.Effect).Radius = 0;
+            ((BlurEffect)image.Effect).Radius = 0;
             image.Visibility = Visibility.Visible;
             label.Visibility = Visibility.Hidden;
 
@@ -128,24 +136,19 @@ namespace ImageViewer
 
             using (var t = _files.GetTags())
             {
-                foreach (var tag in t)
-                {
-                    tag.Color = TagMatch(tag);
-                }
+                foreach (var tag in t) tag.Color = TagMatch(tag);
             }
+
             UpdateTagList();
         }
 
         private void ChangeImage(FilteredFileList.Delta delta = FilteredFileList.Delta.None)
         {
-            ((BlurEffect) image.Effect).Radius = 25;
+            ((BlurEffect)image.Effect).Radius = 25;
             label.Visibility = Visibility.Visible;
             label.Text = "Loading...";
 
-            if (!_files.ChangeImage(delta, UpdateImage))
-            {
-                DisplayNoImage();
-            }
+            if (!_files.ChangeImage(delta, UpdateImage)) DisplayNoImage();
         }
 
         private void DisplayNoImage()
@@ -164,7 +167,7 @@ namespace ImageViewer
             base.OnClosing(e);
 
             if (TaskList.Closing) return;
-            
+
             TaskList.Close();
 
             var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
@@ -202,14 +205,14 @@ namespace ImageViewer
 
         public static SolidColorBrush TagMatch(string tag)
         {
-            return CurrentFile != null && CurrentFile.HasTag(tag) ? new SolidColorBrush(Colors.Red) : new SolidColorBrush(Colors.Black);
+            return CurrentFile != null && CurrentFile.HasTag(tag)
+                ? new SolidColorBrush(Colors.Red)
+                : new SolidColorBrush(Colors.Black);
         }
-
-        private static FileElement CurrentFile => _instance._files.CurrentFile;
 
         private void TextBlock_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var txt = (TextBlock) sender;
+            var txt = (TextBlock)sender;
             var tag = txt.Text;
             if (CurrentFile.HasTag(tag))
                 CurrentFile.RemoveTag(tag);
@@ -239,9 +242,6 @@ namespace ImageViewer
             txt.Text = "";
         }
 
-        private double TagListTriggerArea => Math.Max(myGrid.ActualWidth * 0.05, 20);
-        private double TopTextTriggerArea => myGrid.ActualHeight - Math.Max(myGrid.ActualHeight*0.05, 20);
-
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
             var pos = e.GetPosition(this);
@@ -256,10 +256,7 @@ namespace ImageViewer
                 _quickTagsAnimation.Show();
             }
 
-            if (pos.Y < TopTextTriggerArea && !quickTags.IsMouseOver)
-            {
-                _quickTagsAnimation.Hide();
-            }
+            if (pos.Y < TopTextTriggerArea && !quickTags.IsMouseOver) _quickTagsAnimation.Hide();
         }
 
         private void HideTagList(object sender, MouseEventArgs e)
@@ -276,7 +273,7 @@ namespace ImageViewer
         private void quickTags_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key != Key.Enter) return;
-            CurrentFile.SetTags(quickTags.Text.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries));
+            CurrentFile.SetTags(quickTags.Text.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
         }
     }
 }

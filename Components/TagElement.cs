@@ -5,10 +5,10 @@ namespace Components
 {
     public class TagElement : IComparable
     {
-        private bool _include = false;
-        private bool _exclude = false;
-        private bool _union = false;
         private Color _color = Colors.Black;
+        private bool _exclude;
+        private bool _include;
+        private bool _union;
 
         public TagElement(string name)
         {
@@ -17,14 +17,16 @@ namespace Components
         }
 
         /// <summary>
-        /// The actual tag.
+        ///     The actual tag.
         /// </summary>
         public string TagName { get; }
 
         /// <summary>
-        /// Should this tag be required for matching?
+        ///     Should this tag be required for matching?
         /// </summary>
-        public bool Include { get { return _include; }
+        public bool Include
+        {
+            get => _include;
             set
             {
                 if (value == _include) return;
@@ -35,11 +37,11 @@ namespace Components
         }
 
         /// <summary>
-        /// Should this tag be excluded from all matches?
+        ///     Should this tag be excluded from all matches?
         /// </summary>
         public bool Exclude
         {
-            get { return _exclude; }
+            get => _exclude;
             set
             {
                 if (value == _exclude) return;
@@ -50,11 +52,11 @@ namespace Components
         }
 
         /// <summary>
-        /// Should this tag be optional for all matches?
+        ///     Should this tag be optional for all matches?
         /// </summary>
         public bool Union
         {
-            get { return _union; }
+            get => _union;
             set
             {
                 if (value == _union) return;
@@ -65,24 +67,25 @@ namespace Components
         }
 
         /// <summary>
-        /// Ugly bleed-through of other concerns - Tag text should be highlighted in main window, and I can't find a way to have XAML call functions with per-element parameters.
+        ///     Ugly bleed-through of other concerns - Tag text should be highlighted in main window, and I can't find a way to
+        ///     have XAML call functions with per-element parameters.
         /// </summary>
         public SolidColorBrush Color
         {
-            get { return new SolidColorBrush(_color); }
-            set { _color = value.Color; }
-        }
-
-        // Boilerplate comparison stuff. I wish C# had sensible metaprogramming facilities.
-        public override int GetHashCode()
-        {
-            return TagName.GetHashCode();
+            get => new SolidColorBrush(_color);
+            set => _color = value.Color;
         }
 
         public int CompareTo(object obj)
         {
             var o = obj as TagElement;
             return o == null ? 1 : string.Compare(TagName, o.TagName, StringComparison.Ordinal);
+        }
+
+        // Boilerplate comparison stuff. I wish C# had sensible metaprogramming facilities.
+        public override int GetHashCode()
+        {
+            return TagName.GetHashCode();
         }
 
         public override bool Equals(object obj)

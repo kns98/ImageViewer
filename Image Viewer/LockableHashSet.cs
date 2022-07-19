@@ -7,7 +7,7 @@ namespace ImageViewer
 {
     internal class LockableHashSet<T>
     {
-        private readonly HashSet<T> _allTags= new HashSet<T>();
+        private readonly HashSet<T> _allTags = new HashSet<T>();
         private readonly Mutex mutex = new Mutex();
 
         public LockedList GetList()
@@ -18,7 +18,7 @@ namespace ImageViewer
         public class LockedList : IDisposable, ISet<T>
         {
             private readonly LockableHashSet<T> _tags;
-            private bool _disposed = false;
+            private bool _disposed;
 
             public LockedList(LockableHashSet<T> tags)
             {

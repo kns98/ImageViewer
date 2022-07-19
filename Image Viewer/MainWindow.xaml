@@ -6,62 +6,75 @@
         xmlns:components="clr-namespace:Components;assembly=Components"
         mc:Ignorable="d"
         x:Name="Window"
-        Title="MainWindow" Height="350" Width="525" PreviewKeyDown="MainWindow_PreviewKeyDown" MouseMove="Window_MouseMove">
+        Title="MainWindow" Height="350" Width="525" PreviewKeyDown="MainWindow_PreviewKeyDown"
+        MouseMove="Window_MouseMove">
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-            <GradientStop Color="#FF525252" Offset="0.003"/>
-            <GradientStop Color="#FF2D2D2D" Offset="1"/>
+            <GradientStop Color="#FF525252" Offset="0.003" />
+            <GradientStop Color="#FF2D2D2D" Offset="1" />
         </LinearGradientBrush>
     </Window.Background>
     <Grid x:Name="myGrid">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <ScrollViewer x:Name="tagScrollList" VerticalScrollBarVisibility="Hidden" Grid.Column="0" Height="{Binding ElementName=myGrid, Path=ActualHeight}" Grid.RowSpan="3" Width="auto" MouseLeave="HideTagList" MaxWidth="0">
-            <StackPanel x:Name="panel"  Opacity="0">
+        <ScrollViewer x:Name="tagScrollList" VerticalScrollBarVisibility="Hidden" Grid.Column="0"
+                      Height="{Binding ElementName=myGrid, Path=ActualHeight}" Grid.RowSpan="3" Width="auto"
+                      MouseLeave="HideTagList" MaxWidth="0">
+            <StackPanel x:Name="panel" Opacity="0">
                 <TextBox x:Name="newTagBox" PreviewKeyDown="newTagBox_PreviewKeyDown" />
-                <ItemsControl BorderThickness="0" x:Name="tagList" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="auto" VerticalContentAlignment="Center" Visibility="Visible">
+                <ItemsControl BorderThickness="0" x:Name="tagList" HorizontalAlignment="Left" Margin="0"
+                              VerticalAlignment="Top" Width="auto" VerticalContentAlignment="Center"
+                              Visibility="Visible">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="components:TagElement">
                             <StackPanel Orientation="Horizontal">
-                                <CheckBox x:Name="chkExclude" Padding="5,0,5,0" IsChecked="{Binding Exclude}" Content="-" Checked="ChangeTag" />
-                                <CheckBox x:Name="chkInclude" Padding="5,0,5,0" IsChecked="{Binding Include}" Content="+" Checked="ChangeTag" />
-                                <CheckBox x:Name="chkUnion"  Padding="5,0,5,0" IsChecked="{Binding Union}" Content="O" Checked="ChangeTag" />
-                                <TextBlock Text="{Binding TagName}" Foreground="{Binding Color}" MouseDown="TextBlock_MouseDown" />
+                                <CheckBox x:Name="chkExclude" Padding="5,0,5,0" IsChecked="{Binding Exclude}"
+                                          Content="-" Checked="ChangeTag" />
+                                <CheckBox x:Name="chkInclude" Padding="5,0,5,0" IsChecked="{Binding Include}"
+                                          Content="+" Checked="ChangeTag" />
+                                <CheckBox x:Name="chkUnion" Padding="5,0,5,0" IsChecked="{Binding Union}" Content="O"
+                                          Checked="ChangeTag" />
+                                <TextBlock Text="{Binding TagName}" Foreground="{Binding Color}"
+                                           MouseDown="TextBlock_MouseDown" />
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
-        <Image x:Name="image" Grid.Column="2" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Grid.Row="1">
+        <Image x:Name="image" Grid.Column="2" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center"
+               Grid.Row="1">
             <Image.Effect>
-                <BlurEffect Radius="25"/>
+                <BlurEffect Radius="25" />
             </Image.Effect>
         </Image>
-        <components:OutlinedTextBlock Name="label" Grid.Row="1" Grid.Column="2" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Loading..." Fill="#FFC9C6C6" FontSize="48" TextAlignment="Center" FontWeight="Bold" Stroke="#FF2E2E2E">
+        <components:OutlinedTextBlock Name="label" Grid.Row="1" Grid.Column="2" Margin="0" HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" Text="Loading..." Fill="#FFC9C6C6" FontSize="48"
+                                      TextAlignment="Center" FontWeight="Bold" Stroke="#FF2E2E2E">
             <components:OutlinedTextBlock.Effect>
-                <DropShadowEffect BlurRadius="25" ShadowDepth="0"/>
+                <DropShadowEffect BlurRadius="25" ShadowDepth="0" />
             </components:OutlinedTextBlock.Effect>
         </components:OutlinedTextBlock>
         <Grid Grid.Row="2" Grid.Column="2" x:Name="quickTagsGrid" MaxHeight="0" MouseLeave="HideQuickTags">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBox Grid.Column="1" Grid.Row="0" x:Name="quickTags" Opacity="0" PreviewKeyDown="quickTags_PreviewKeyDown" />
+            <TextBox Grid.Column="1" Grid.Row="0" x:Name="quickTags" Opacity="0"
+                     PreviewKeyDown="quickTags_PreviewKeyDown" />
         </Grid>
     </Grid>
 </Window>

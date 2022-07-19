@@ -10,8 +10,19 @@ namespace ImageViewer
     public class FileElement
     {
         private readonly Mutex _mutex = new Mutex();
+        private HashSet<string> _tags;
 
-        public HashSet<string> Tags {
+        private ShellFile file;
+
+        public FileElement(string fileName, int index)
+        {
+            Index = index;
+            FileName = fileName;
+            file = ShellFile.FromFilePath(FileName);
+        }
+
+        public HashSet<string> Tags
+        {
             get
             {
                 if (_tags != null) return _tags;
@@ -23,22 +34,19 @@ namespace ImageViewer
             }
         }
 
+        public string FileName { get; }
+        public int Index { get; }
+        public Bitmap Thumbnail => file.Thumbnail.Bitmap;
+        public bool Exists => File.Exists(FileName);
+
         private static HashSet<string> GetTags(string[] tags)
         {
             var result = new HashSet<string>();
             if (tags == null) return result;
 
-            foreach (var t in tags)
-            {
-                result.Add(t.Trim());
-            }
+            foreach (var t in tags) result.Add(t.Trim());
             return result;
         }
-
-        public string FileName { get; }
-        public int Index { get; }
-        public Bitmap Thumbnail => file.Thumbnail.Bitmap;
-        public bool Exists => File.Exists(FileName);
 
         public bool HasTag(string tag)
         {
@@ -49,19 +57,9 @@ namespace ImageViewer
         {
             file.Dispose();
             file = null;
-            return toTheVoid ?
-                FileOperationAPIWrapper.SendToVoid(FileName) : 
-                FileOperationAPIWrapper.SendToRecycleBin(FileName);
-        }
-
-        private ShellFile file;
-        private HashSet<string> _tags;
-
-        public FileElement(string fileName, int index)
-        {
-            Index = index;
-            FileName = fileName;
-            file = ShellFile.FromFilePath(FileName);
+            return toTheVoid
+                ? FileOperationAPIWrapper.SendToVoid(FileName)
+                : FileOperationAPIWrapper.SendToRecycleBin(FileName);
         }
 
         public bool AddTag(string tag)

@@ -8,17 +8,10 @@ using Microsoft.Win32;
 namespace ImageViewer
 {
     /// <summary>
-    /// Provides methods for checking whether a file can likely be opened as a BitmapImage, based upon its file extension
+    ///     Provides methods for checking whether a file can likely be opened as a BitmapImage, based upon its file extension
     /// </summary>
     public static class BitmapImageCheck
     {
-        #region class variables
-
-        private static readonly RegistryKey baseKey;
-        private const string WICDecoderCategory = "{7ED96837-96F0-4812-B211-F13C24117ED3}";
-
-        #endregion
-
         #region constructors
 
         static BitmapImageCheck()
@@ -26,29 +19,13 @@ namespace ImageViewer
             baseKey = Registry.ClassesRoot.OpenSubKey("CLSID", false);
             recalculateExtensions();
         }
-        #endregion
-
-        #region properties
-        /// <summary>
-        /// File extensions that are supported by decoders found elsewhere on the system
-        /// </summary>
-        public static ReadOnlyCollection<string> CustomSupportedExtensions { get; private set; }
-
-        /// <summary>
-        /// File extensions that are supported natively by .NET
-        /// </summary>
-        public static ReadOnlyCollection<string> NativeSupportedExtensions { get; private set; }
-
-        /// <summary>
-        /// File extensions that are supported both natively by NET, and by decoders found elsewhere on the system
-        /// </summary>
-        public static ReadOnlyCollection<string> AllSupportedExtensions { get; private set; }
 
         #endregion
 
         #region public methods
+
         /// <summary>
-        /// Check whether a file is likely to be supported by BitmapImage based upon its extension
+        ///     Check whether a file is likely to be supported by BitmapImage based upon its extension
         /// </summary>
         /// <param name="extension">File extension (with or without leading full stop), file name or file path</param>
         /// <returns>True if extension appears to contain a supported file extension, false if no suitable extension was found</returns>
@@ -56,25 +33,52 @@ namespace ImageViewer
         {
             if (extension == null) return false;
             //prepare extension, should a full path be given
-            if (extension.Contains("."))
-            {
-                extension = extension.Substring(extension.LastIndexOf('.') + 1);
-            }
+            if (extension.Contains(".")) extension = extension.Substring(extension.LastIndexOf('.') + 1);
             extension = extension.ToUpper(CultureInfo.InvariantCulture);
             extension = extension.Insert(0, ".");
 
             return AllSupportedExtensions.Contains(extension);
         }
+
+        #endregion
+
+        #region class variables
+
+        private static readonly RegistryKey baseKey;
+        private const string WICDecoderCategory = "{7ED96837-96F0-4812-B211-F13C24117ED3}";
+
+        #endregion
+
+        #region properties
+
+        /// <summary>
+        ///     File extensions that are supported by decoders found elsewhere on the system
+        /// </summary>
+        public static ReadOnlyCollection<string> CustomSupportedExtensions { get; private set; }
+
+        /// <summary>
+        ///     File extensions that are supported natively by .NET
+        /// </summary>
+        public static ReadOnlyCollection<string> NativeSupportedExtensions { get; private set; }
+
+        /// <summary>
+        ///     File extensions that are supported both natively by NET, and by decoders found elsewhere on the system
+        /// </summary>
+        public static ReadOnlyCollection<string> AllSupportedExtensions { get; private set; }
+
         #endregion
 
         #region private methods
+
         /// <summary>
-        /// Re-calculate which extensions are available on this system. It's unlikely this ever needs to be called outside of the constructor.
+        ///     Re-calculate which extensions are available on this system. It's unlikely this ever needs to be called outside of
+        ///     the constructor.
         /// </summary>
         private static void recalculateExtensions()
         {
             var cse = GetSupportedExtensions().ToArray();
-            var nse = new[] { ".BMP", ".GIF", ".ICO", ".JPEG", ".PNG", ".TIFF", ".DDS", ".JPG", ".JXR", ".HDP", ".WDP" };
+            var nse = new[]
+                { ".BMP", ".GIF", ".ICO", ".JPEG", ".PNG", ".TIFF", ".DDS", ".JPG", ".JXR", ".HDP", ".WDP" };
             CustomSupportedExtensions = new ReadOnlyCollection<string>(cse);
             NativeSupportedExtensions = new ReadOnlyCollection<string>(nse);
 
@@ -85,7 +89,7 @@ namespace ImageViewer
         }
 
         /// <summary>
-        /// Represents information about a WIC decoder
+        ///     Represents information about a WIC decoder
         /// </summary>
         private struct DecoderInfo
         {
@@ -93,7 +97,7 @@ namespace ImageViewer
         }
 
         /// <summary>
-        /// Gets a list of additionally registered WIC decoders
+        ///     Gets a list of additionally registered WIC decoders
         /// </summary>
         /// <returns></returns>
         private static IEnumerable<DecoderInfo> GetAdditionalDecoders()
@@ -114,6 +118,7 @@ namespace ImageViewer
                 var extensions = decoder.FileExtensions.Split(',');
                 rtnlist.AddRange(extensions);
             }
+
             return rtnlist;
         }
 
