@@ -244,6 +244,8 @@ namespace ImageViewer
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
+            if(CurrentFile==null) return;
+
             var pos = e.GetPosition(this);
             Title = $"{pos}";
             if (pos.X < TagListTriggerArea)
